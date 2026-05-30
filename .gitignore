@@ -1,0 +1,31 @@
+# === Obsidian (stato UI macchina-specifico) ===
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace*
+.obsidian/cache
+.trash/
+
+# === Claude Code (impostazioni locali) ===
+.claude/
+
+# === Sistema operativo ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# === Repository-tool clonati (ri-clonabili, non vanno nel vault repo) ===
+07 - Tools & Repos/ktm-can/
+07 - Tools & Repos/awesome-automotive-can-id/
+
+# === Log CAN grezzi di grandi dimensioni (decommentare se necessario) ===
+# *.candump
+# *.asc

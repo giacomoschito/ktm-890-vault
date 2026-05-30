@@ -1,0 +1,10 @@
+{
+  "useMarkdownLinks": false,
+  "newFileLocation": "current",
+  "attachmentFolderPath": "Assets",
+  "alwaysUpdateLinks": true,
+  "defaultViewMode": "source",
+  "foldHeading": true,
+  "showLineNumber": false,
+  "spellcheck": false
+}

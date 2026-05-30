@@ -1,0 +1,15 @@
+# Normalizza i fine-riga: evita diff spuri tra Windows, mobile e altri device
+* text=auto
+
+# I file markdown sono testo
+*.md text
+*.py text
+*.json text
+*.css text
+
+# I binari non vanno toccati
+*.js binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
