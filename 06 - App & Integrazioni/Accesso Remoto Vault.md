@@ -104,20 +104,47 @@ Le istruzioni del progetto le preparo io (testo pronto da incollare).
 
 ---
 
-## Checklist Setup (dopo la scelta del path)
+## 🛠️ RUNBOOK — Path A GitHub (scelto)
 
-### Path A — GitHub
-- [ ] Creare account GitHub (se non c'è)
-- [ ] `git init` nel vault + repo privato
-- [ ] `.gitignore` per escludere file di sistema
-- [ ] Installare Obsidian Git plugin (auto-sync)
-- [ ] Collegare connettore GitHub a Claude
-- [ ] Creare Project "KTM 890" su claude.ai
-- [ ] Test: aggiungere una nota dal telefono
+### ✅ Fatto da Claude Code (locale)
+- [x] `git init -b main` nel vault
+- [x] Identità git impostata (Giacomo Schito · giacomoschito99@gmail.com)
+- [x] `.gitignore` (esclude workspace Obsidian, repo-tool, file sistema)
+- [x] `.gitattributes` (normalizza fine-riga PC/mobile)
+- [x] Primo commit (`c60a376`, 30 file)
 
-### Path B — Live
-- [ ] Installare plugin Obsidian Local REST API
-- [ ] Installare Tailscale su PC e telefono
-- [ ] Configurare MCP server Obsidian
-- [ ] Collegare a Claude Desktop
-- [ ] Test accesso remoto
+### 🔐 Step che fai TU (autenticazione — una volta sola)
+In un terminale (PowerShell o cmd), dopo che `gh` è installato:
+```
+gh auth login
+```
+Rispondi alle domande:
+1. `GitHub.com`
+2. `HTTPS`
+3. Authenticate Git with your GitHub credentials → `Yes`
+4. `Login with a web browser`
+5. Copia il codice mostrato, apri il browser, incollalo, autorizza
+
+### 🚀 Poi Claude crea il repo e pusha
+```
+gh repo create ktm-890-vault --private --source="C:\KTM DUKE 890" --remote=origin --push
+```
+→ Repo privato creato su GitHub + vault caricato.
+
+### 🔄 Sync automatico col plugin Obsidian Git
+1. Obsidian → Settings → Community plugins → Browse
+2. Cerca **"Obsidian Git"** (autore: Vinzent) → Install → Enable
+3. Impostazioni plugin:
+   - Auto commit-and-sync ogni **10 minuti**
+   - Pull on startup → ON
+   - Push on commit → ON
+
+### 📱 Accesso da remoto via Claude
+1. Su Claude (Desktop o claude.ai), collega il **connettore GitHub**
+2. Crea un **Project "KTM 890 Duke"** (istruzioni pronte: [[Istruzioni Progetto Claude]])
+3. Da fuori casa: scrivi a Claude → committa la nota sul repo
+4. Il PC (Obsidian Git) la scarica al prossimo avvio/sync
+
+### Test finale
+- [ ] Dal telefono: "Claude, aggiungi nota: rifornito 13L oggi"
+- [ ] Verifica che compaia nel vault sul PC dopo il sync
