@@ -2,9 +2,36 @@
 
 tags: #accessori #scarico #diy #arrow
 
-> **Stato:** In attesa della vite DB killer
-> **Scarico:** Arrow (titanio, omologato) — fornito dall'amico
+> **Stato:** In attesa della vite DB killer (da verificare — vedi nota)
+> **Scarico:** Arrow titanio omologato — fornito dall'amico
 > **Scarico attuale:** Originale KTM (rimontato per revisione)
+
+---
+
+## Dati Identificativi Scarico (verificati su corpo silenziatore — 2026-06-01)
+
+| Voce | Valore |
+|------|--------|
+| Marca | Arrow |
+| Materiale | Titanio |
+| Tipo | Slip-on (solo terminale/silenziatore) |
+| Compatibilità | KTM 790/890 Duke (2018–2022) |
+| Modello probabile | Arrow GP2 Titanium o Race-Tech Titanium *(da confermare su scontrino/scatola/lato opposto silenziatore)* |
+| Paese approvazione | **E₁₃** — Lussemburgo (ECE) |
+| Normativa | **UN-ECE Regolamento 92 — Rev. 01** (silenziatori sostitutivi per moto) |
+| Numero approvazione | **10342** |
+| Marcatura completa | `E13 92R-01 10342` |
+| Legale su strada in Italia/UE | ✅ Sì (con DB killer inserito) |
+| Stato | ⚠️ Da montare |
+
+> **⚠️ Nota vite DB killer:** dalla foto dello scarico si intravede un piccolo bullone con testa a brugola sul corpo del silenziatore, esattamente nella posizione tipica della vite di blocco del DB killer. **Da verificare di persona:** è una vite già montata e funzionante, o solo il foro filettato vuoto? Se è già lì, il blocco "manca vite DB killer" è risolto.
+
+### Cosa significa E13 / 92R-01
+
+- **E13** = Paese di omologazione ECE: Lussemburgo (standard per molti produttori italiani di scarichi tra cui Arrow e Akrapovič)
+- **R92** = UN-ECE Regulation No. 92 — certifica che il silenziatore sostitutivo rispetta i limiti di rumore e le prescrizioni tecniche previste per la circolazione stradale in tutti i Paesi ECE (inclusa l'Italia)
+- **Con DB killer inserito:** legale su strada in Italia e in tutta l'UE ✅
+- **Senza DB killer:** non omologato per l'uso stradale ❌
 
 ---
 
@@ -29,7 +56,7 @@ tags: #accessori #scarico #diy #arrow
 - Effettua il lavoro a **motore freddo** (moto ferma da almeno 2-3 ore)
 - Lo scarico originale sarà caldo se hai appena guidato — aspetta
 - Lavora in un posto con luce sufficiente
-- Non forzare mai le viti in alluminio/titanio — titanio si rovina facilmente
+- Non forzare mai le viti in titanio — si rovinano facilmente
 
 ---
 
@@ -72,7 +99,7 @@ Per uno scarico Arrow "slip-on" (solo terminale), si smonta solo il **silenziato
 
 Prima di montare, verifica:
 - [ ] DB killer presente e inserito nel terminale
-- [ ] Foro per la vite DB killer — misura il diametro
+- [ ] Vite DB killer presente e funzionante — misura il diametro
 - [ ] Guarnizione/baderna per il giunto con midpipe (spesso inclusa)
 - [ ] Staffa di supporto inclusa (o riusi quella originale)
 - [ ] Fascetta di collegamento inclusa
@@ -104,7 +131,7 @@ Il DB killer (silenziatore aggiuntivo) si inserisce nel terminale e si blocca co
 
 1. Inserisci il bullone della staffa
 2. Stringe a mano per allineare tutto
-3. Coppia: **~20-25 Nm** (non serve torsiometro — senso di "ben stretto senza forzare")
+3. Coppia: **~20-25 Nm**
 
 ### 3.4 — Fissa la fascetta sul collettore
 
@@ -141,7 +168,7 @@ Lo scarico Arrow in titanio svilupperà una colorazione dorata/blu nelle prime o
 Con il DB killer inserito: omologato, livelli legali.
 Senza DB killer: più rumoroso, non omologato per strada.
 
-> **Consiglio:** Guida sempre con il DB killer in strada per non avere problemi con le forze dell'ordine. Rimuovilo solo in pista o per ascoltarlo in privato.
+> **Consiglio:** Guida sempre con il DB killer in strada. Rimuovilo solo in pista o per ascoltarlo in privato.
 
 ### Manutenzione Scarico Arrow
 
@@ -153,7 +180,7 @@ Senza DB killer: più rumoroso, non omologato per strada.
 
 ## Checklist Montaggio
 
-- [ ] Vite DB killer acquistata (misura verificata: ___ mm)
+- [ ] Vite DB killer verificata / acquistata (misura: ___ mm)
 - [ ] Moto fredda da almeno 3 ore
 - [ ] Attrezzi preparati
 - [ ] Smontato scarico OEM
@@ -171,10 +198,10 @@ Senza DB killer: più rumoroso, non omologato per strada.
 Sì, è uno degli interventi più semplici. Non richiede attrezzi speciali né smontaggio di parti complesse.
 
 **Perde la garanzia?**
-Lo scarico Arrow è omologato, quindi non invalida la garanzia sulla moto per i componenti non correlati. Tecnicamente l'ECU potrebbe non essere più in specifica — valuta se hai ancora garanzia attiva.
+Lo scarico Arrow è omologato (R92), quindi non invalida la garanzia sulla moto per i componenti non correlati.
 
 **Cambia il suono molto?**
-Sì, significativamente. Il titanio Arrow darà un sound sportivo molto più caratteristico rispetto all'originale KTM, soprattutto in accelerazione.
+Sì, significativamente. Il titanio Arrow darà un sound sportivo molto più caratteristico rispetto all'originale KTM.
 
 **Devo rimappare l'ECU?**
-Con uno scarico slip-on omologato solitamente no — la mappa stock gestisce bene. Se noti anomalie (popping eccessivo in rilascio) puoi considerare una mappatura aftermarket in futuro.
+Con uno scarico slip-on omologato solitamente no. Se noti popping eccessivo in rilascio puoi valutare una mappatura in futuro.
