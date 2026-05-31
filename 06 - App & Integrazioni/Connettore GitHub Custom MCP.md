@@ -39,16 +39,31 @@ Repo da gestire: `giacomoschito/ktm-890-vault` (privato)
 
 ---
 
-## ⚠️ Possibile intoppo (onestà)
+## Esito Verificato (2026-05-31)
 
-Il server MCP di GitHub usa OAuth tramite GitHub App. In alcuni client Claude
-questo flusso OAuth a volte **non si completa** (problema noto, in beta).
+Connettore collegato e testato. Risultato:
 
-**Se succede:**
-- Annota l'errore esatto che vedi
-- Verifichiamo se serve passare da "Advanced settings" (OAuth Client ID/Secret di
-  una GitHub OAuth App dedicata) oppure un approccio alternativo
-- In ultima istanza resta sempre attivo il fallback **[[Inbox Google Drive]]** (già funzionante)
+| Funzione | Esito |
+|----------|-------|
+| Lettura del repo da remoto | ✅ Funziona |
+| Scrittura sul repo da remoto | 🔒 Bloccata (token read-only) |
+
+Il connettore GitHub di Claude (beta) fornisce accesso in **sola lettura**:
+errore `403 Resource not accessible by integration` in scrittura. Per leggere
+i repo privati serviva renderlo pubblico (fatto), per scrivere servirebbe un
+token con permessi di scrittura non esposto dal connettore.
+
+## Architettura Remota Finale (dual-channel)
+
+```
+LETTURA da remoto  →  Connettore GitHub
+  (dal telefono chiedi a Claude info sulla moto → lui legge il vault)
+
+SCRITTURA da remoto →  Inbox Google Drive  →  [[Inbox Google Drive]]
+  (scrivi note nel Google Doc → Claude le archivia quando sei al PC)
+```
+
+Due canali complementari = sistema remoto completo (leggi E scrivi da fuori).
 
 ---
 
