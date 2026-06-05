@@ -102,10 +102,75 @@ AT_RESPONSES = {
     "ATH0": "OK",
     "ATS0": "OK",
     "ATSP0": "OK",
+    "ATSP6": "OK",
+    "ATCAF1": "OK",
+    "ATCAF0": "OK",
     "ATDP": "AUTO, ISO 15765-4 (CAN 11/500)",
     "ATRV": None,  # gestito sotto
     "ATI": "ELM327 v1.5",
 }
+
+# --- ECU simulata "KTM 890 Duke 2021 full power" per testare il rilevamento A2 ---
+# Cambia FAKE_A2=True per simulare invece una variante depotenziata
+FAKE_A2 = False
+
+SIM_VIN = "VBKEXJ408MM123456"  # KTM WMI = VBK
+SIM_CALIBRATION_ID = "KTM89021A2-35KW-V107" if FAKE_A2 else "KTM89021FP-105KW-V112"
+SIM_SW_VERSION = "1.07.A2" if FAKE_A2 else "1.12.FP"
+SIM_HW_NUMBER = "0261S20189"  # Bosch ME17 fittizio
+SIM_ECU_NAME = "ECM-EDC17C84"
+
+# DIDs standard ISO 14229 supportati
+UDS_DIDS = {
+    0xF186: b"\x03",  # active diagnostic session = default
+    0xF187: SIM_HW_NUMBER.encode(),
+    0xF188: SIM_SW_VERSION.encode(),
+    0xF189: SIM_SW_VERSION.encode(),
+    0xF18A: b"BOSCH",
+    0xF18C: b"BOSCH-SN-7723004A",
+    0xF190: SIM_VIN.encode(),
+    0xF194: SIM_SW_VERSION.encode(),
+    0xF195: SIM_CALIBRATION_ID.encode(),
+    0xF197: SIM_ECU_NAME.encode(),
+    0xF1A2: SIM_HW_NUMBER.encode(),
+}
+
+
+def encode_mode09(pid: str) -> str:
+    """Mode 09 OBD-II — vehicle information."""
+    if pid == "02":  # VIN
+        vin = SIM_VIN.encode().hex().upper()
+        # response: 49 02 01 <17 bytes>
+        return "49 02 01 " + " ".join(vin[i:i+2] for i in range(0, len(vin), 2))
+    if pid == "04":  # CalibrationID
+        cal = SIM_CALIBRATION_ID.encode().hex().upper()
+        return "49 04 01 " + " ".join(cal[i:i+2] for i in range(0, len(cal), 2))
+    if pid == "06":  # CVN
+        return "49 06 01 12 34 56 78"
+    if pid == "0A":  # ECU name
+        name = SIM_ECU_NAME.encode().hex().upper()
+        return "49 0A 01 " + " ".join(name[i:i+2] for i in range(0, len(name), 2))
+    return "NO DATA"
+
+
+def encode_mode22(did_hex: str) -> str:
+    """Mode 22 UDS ReadDataByIdentifier."""
+    try:
+        did = int(did_hex, 16)
+    except ValueError:
+        return "NO DATA"
+    payload = UDS_DIDS.get(did)
+    if payload is None:
+        return "7F 22 31"  # NRC: requestOutOfRange
+    high = (did >> 8) & 0xFF
+    low = did & 0xFF
+    body = " ".join(f"{b:02X}" for b in payload)
+    return f"62 {high:02X} {low:02X} {body}"
+
+
+def encode_mode03() -> str:
+    """Mode 03 — read DTCs (simuliamo zero codici attivi)."""
+    return "43 00"
 
 
 async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
@@ -126,6 +191,14 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
             elif cmd.startswith("01") and len(cmd) >= 4:
                 pid = cmd[2:4]
                 writer.write(f"{encode_pid(pid, state)}\r\r>".encode())
+            elif cmd.startswith("09") and len(cmd) >= 4:
+                writer.write(f"{encode_mode09(cmd[2:4])}\r\r>".encode())
+            elif cmd.startswith("22") and len(cmd) >= 6:
+                writer.write(f"{encode_mode22(cmd[2:6])}\r\r>".encode())
+            elif cmd.startswith("03"):
+                writer.write(f"{encode_mode03()}\r\r>".encode())
+            elif cmd.startswith("ATSH"):
+                writer.write(b"OK\r\r>")
             else:
                 writer.write(b"?\r\r>")
             await writer.drain()
