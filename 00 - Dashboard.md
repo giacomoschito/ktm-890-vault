@@ -1,8 +1,10 @@
 ---
-km_attuale: 5620
-km_gomme_t32: 120
+km_attuale: 5407
+km_gomme_t32: 0 (da ricalibrare)
 stato_rodaggio: in corso (fase 2)
 mappatura_attiva: Rain
+ultimo_cambio_olio_km: 5407
+ultimo_cambio_olio_data: 2026-06-05
 ---
 
 # KTM 890 Duke 2021 — Dashboard
@@ -15,12 +17,15 @@ mappatura_attiva: Rain
 
 | Parametro | Valore |
 |-----------|--------|
-| Chilometraggio moto | **5.620 km** |
+| Chilometraggio moto | **5.407 km** (confermato da odometro 2026-06-05) |
 | Gomme montate | Bridgestone T32 (dal 29/05/2026) |
-| Km sulle T32 | **120 km** — fase 2 rodaggio |
+| Km sulle T32 | **~120 km** — fase 2 rodaggio |
 | Rodaggio T32 | Fase 2 — puoi aprire gli angoli progressivamente |
 | Mappatura attiva | Rain |
-| Prossimo tagliando | ~10.000 km (olio motore) |
+| Ultimo cambio olio+filtro | 2026-06-05 (DIY) @ 5.407 km |
+| Prossimo cambio olio | ~10.400 km |
+| ⚠️ Open issue | Vite filtro spezzata dentro — da estrarre |
+| ⚠️ Open issue | Spia ASSISTENZA attiva — reset via PC |
 | Pressione ant. | 2,5 bar (verificare!) |
 | Pressione post. | 2,9 bar (verificare!) |
 
@@ -33,6 +38,9 @@ mappatura_attiva: Rain
 - [ ] Acquistare vite DB killer per scarico Arrow
 - [ ] Installare KTM MY RIDE sul telefono
 - [ ] Montare scarico Arrow (quando arriva la vite) — [[05 - Accessori/Montaggio Scarico Arrow]]
+- [ ] **Acquistare estrattore viti spezzate** per vite filtro olio rotta
+- [ ] **Resettare spia ASSISTENZA via PC** — vedi [[04 - Diagnostica/Reset Spia Assistenza KTM 890]]
+- [ ] Monitorare zona filtro olio per eventuali trasudazioni nelle prossime uscite
 
 ---
 

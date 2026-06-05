@@ -1,8 +1,10 @@
 ---
 prossimo_intervento: true
 tipo: tagliando-olio
-km_previsti: 10000
-data_prevista: 2026-12-01
+km_previsti: 10400
+data_prevista: 2027-01-01
+ultimo_intervento_km: 5407
+ultimo_intervento_data: 2026-06-05
 ---
 
 # Storico Tagliandi — KTM 890 Duke 2021
@@ -81,6 +83,8 @@ tags: #tagliandi #manutenzione
 | Data | Km | Intervento | Officina/DIY | Costo | Note |
 |------|----|------------|--------------|-------|------|
 | 2026-05-29 | ~5.500 | Sostituzione gomme | Da confermare | Da confermare | Bridgestone T32 ant+post |
+| 2026-06-05 | 5.407 | Cambio olio + filtro (DIY) | DIY garage | Da registrare | ⚠️ Vite filtro spezzata DENTRO — NON rimossa (nessuna trasudazione, prove pomeriggio OK). Da estrarre con attrezzo dedicato. Spia ASSISTENZA ancora attiva — reset via PC da fare. |
+| 2026-06-05 | 5.407 | Rifornimento benzina | Self-service | €14,54 | Mezzo serbatoio già presente |
 
 ---
 
@@ -109,7 +113,28 @@ tags: #tagliandi #manutenzione
 
 ## Promemoria Tagliando Prossimo
 
-> Con ~5.500 km al ritiro, il prossimo tagliando olio sarà tra circa **4.500 km**
-> Stimando ~300 km/mese (commuting + weekend), prossimo tagliando: **~fine 2026**
+> Cambio olio + filtro fatto in DIY il **2026-06-05 a 5.407 km** (odometro confermato).
+> Prossimo cambio olio: **~10.400 km** (ogni 5.000 km da quello attuale).
+> Tagliando completo (filtro aria, candele, ispezione valvole): **~10.000 km originali moto**.
 
-Inserisci promemoria telefono a: **9.500 km** per prenotare officina
+Inserisci promemoria telefono a: **9.900 km** per prenotare/pianificare.
+
+---
+
+## ⚠️ Open Issues Post-Tagliando 2026-06-05
+
+### 1. Vite filtro olio spezzata dentro
+- **Stato:** Bullone rotto all'interno della sede, NON rimosso
+- **Motivo non rimozione:** Evitare di compromettere il lavoro già fatto (nessuna trasudazione olio confermata oggi pomeriggio)
+- **Azione:** Procurarsi **estrattore per viti spezzate** (screw/bolt extractor set)
+  - Set base economico: €10-20 (Amazon "estrattore viti rotte")
+  - Per casi tosti: kit con punte sinistrorse + estrattori conici (es. Irwin Hanson, Wera)
+  - Se filettatura danneggiata in fase di estrazione → kit **Heli-Coil M6/M8** per riparare
+- **Quando:** Prima del prossimo cambio olio (~10.400 km) o appena disponibile l'attrezzo
+- **Verifica intermedia:** Controllare ogni uscita che non ci siano gocciolamenti dal filtro
+
+### 2. Spia ASSISTENZA da spegnere
+- **Stato:** Messaggio service ancora attivo sul cruscotto
+- **Causa:** Reminder a tempo/km dell'ECU non resettato
+- **Soluzione PC:** Vedi [[04 - Diagnostica/Reset Spia Assistenza KTM 890]]
+
