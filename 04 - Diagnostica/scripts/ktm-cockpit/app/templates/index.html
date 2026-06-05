@@ -130,6 +130,15 @@
     </div>
 
     <div class="card" style="margin-top: 20px;">
+      <h2>Identificazione ECU</h2>
+      <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 12px;">
+        Lettura one-shot via UDS / Mode 09. Identifica variante (A2 35 kW vs full power 105 CV).
+      </p>
+      <button id="btn-ecu" style="background: var(--accent); color: #0a0a0b; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit;">Esegui scansione ECU</button>
+      <div id="ecu-result" style="margin-top: 14px;"></div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
       <h2>Sorgente dati</h2>
       <dl class="kv">
         <dt>WebSocket</dt><dd id="ws-state">—</dd>
@@ -231,6 +240,51 @@ function connect() {
 connect();
 
 setInterval(() => { $('clock').textContent = new Date().toLocaleString('it-IT'); }, 1000);
+
+// ECU scan on demand
+const verdictColor = c => c === 'high' ? 'var(--bad)' : c === 'medium' ? 'var(--warn)' : 'var(--text-dim)';
+function renderEcu(r) {
+  const a2 = r.a2 || {};
+  const verdict = a2.is_likely_a2
+    ? `<span style="color:${verdictColor(a2.confidence)}; font-weight:600;">SOSPETTO A2 (35 kW) — confidence: ${a2.confidence}</span>`
+    : (a2.evidence_against && a2.evidence_against.length
+        ? `<span style="color: var(--good); font-weight:600;">NON A2 — sembra FULL POWER</span>`
+        : `<span style="color: var(--text-dim);">Inconclusivo — manca cross-check community DB</span>`);
+  const reasons = (a2.reasons || []).map(x => `<li>${x}</li>`).join('') || '<li>—</li>';
+  const against = (a2.evidence_against || []).map(x => `<li>${x}</li>`).join('');
+  const dtcs = (r.dtcs && r.dtcs.length) ? r.dtcs.map(c => `<code>${c}</code>`).join(' ') : 'nessuno';
+  const dids = Object.entries(r.dids || {}).map(([k,v]) => `<tr><td style="color:var(--text-dim);padding-right:12px;">${k}</td><td><code>${v}</code></td></tr>`).join('');
+  const notes = (r.notes || []).map(n => `<li>${n}</li>`).join('');
+  $('ecu-result').innerHTML = `
+    <div style="font-size:0.95rem; margin-bottom: 10px;">${verdict}</div>
+    <dl class="kv" style="margin-bottom:14px;">
+      <dt>VIN</dt><dd><code>${r.vin || '—'}</code> ${r.vin_valid_ktm ? '<span style="color:var(--good);">✓ KTM</span>' : ''}</dd>
+      <dt>Calibration ID</dt><dd><code>${r.calibration_id || '—'}</code></dd>
+      <dt>Software ver.</dt><dd><code>${r.software_version || '—'}</code></dd>
+      <dt>SW number</dt><dd><code>${r.sw_number || '—'}</code></dd>
+      <dt>HW number</dt><dd><code>${r.hw_number || '—'}</code></dd>
+      <dt>Supplier</dt><dd>${r.supplier || '—'}</dd>
+      <dt>ECU name</dt><dd>${r.ecu_name || '—'}</dd>
+      <dt>DTCs</dt><dd>${dtcs}</dd>
+    </dl>
+    <details>
+      <summary style="cursor:pointer;color:var(--text-dim);font-size:0.85rem;">Indizi A2 / contro-indizi</summary>
+      <div style="font-size:0.85rem;margin-top:8px;">
+        <strong style="color:var(--warn);">A2:</strong><ul style="margin-left:18px;">${reasons}</ul>
+        ${against ? `<strong style="color:var(--good);">Full power:</strong><ul style="margin-left:18px;">${against}</ul>` : ''}
+      </div>
+    </details>
+    ${dids ? `<details style="margin-top:8px;"><summary style="cursor:pointer;color:var(--text-dim);font-size:0.85rem;">Tutti i DIDs letti</summary><table style="margin-top:8px;font-size:0.82rem;">${dids}</table></details>` : ''}
+    ${notes ? `<div style="margin-top:10px;font-size:0.82rem;color:var(--text-dim);"><ul style="margin-left:18px;">${notes}</ul></div>` : ''}
+  `;
+}
+$('btn-ecu').addEventListener('click', async () => {
+  const btn = $('btn-ecu'); btn.disabled = true; btn.textContent = 'Lettura in corso…';
+  try {
+    const r = await fetch('/api/ecu'); renderEcu(await r.json());
+  } catch (e) { $('ecu-result').innerHTML = `<div class="alert urgent">Errore: ${e}</div>`; }
+  finally { btn.disabled = false; btn.textContent = 'Esegui scansione ECU'; }
+});
 </script>
 
 </body>

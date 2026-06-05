@@ -27,7 +27,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, desc, select
 
-from app import elm_client, maintenance
+from app import ecu_info, elm_client, maintenance
 from app.db import Sample, engine, init_db, save_sample
 
 BASE_DIR = Path(__file__).parent
@@ -112,6 +112,13 @@ async def api_history(limit: int = 500):
         }
         for r in reversed(rows)
     ]
+
+
+@app.get("/api/ecu")
+async def api_ecu():
+    """One-shot ECU info read: VIN, calibration ID, DTCs, verdetto A2."""
+    report = await ecu_info.collect(host=ELM_HOST, port=ELM_PORT)
+    return ecu_info.to_dict(report)
 
 
 @app.websocket("/ws/live")
