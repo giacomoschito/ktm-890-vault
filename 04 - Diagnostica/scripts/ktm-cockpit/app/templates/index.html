@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KTM 890 Duke · Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:        #0a0a0b;
+    --panel:     #131316;
+    --panel-2:   #1a1a1f;
+    --line:      #26262c;
+    --text:      #ededee;
+    --text-dim:  #8a8a93;
+    --accent:    #ff6a13;  /* arancione KTM, saturazione ~75% */
+    --good:      #4ade80;
+    --warn:      #fbbf24;
+    --bad:       #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Geist', system-ui, sans-serif; min-height: 100dvh; }
+  body { padding: 24px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .nav { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .brand { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; }
+  .brand span { color: var(--accent); }
+  .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); margin-right: 8px; }
+  .pulse.live { background: var(--good); box-shadow: 0 0 0 0 var(--good); animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); } 100% { box-shadow: 0 0 0 10px rgba(74,222,128,0); } }
+  .meta { font-family: 'Geist Mono', monospace; font-size: 0.85rem; color: var(--text-dim); }
+
+  /* Layout asimmetrico: gauges grandi + colonna laterale */
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 20px;
+  }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .card h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); font-weight: 500; margin-bottom: 12px; }
+
+  /* Gauges grandi */
+  .gauges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .gauge { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+  .gauge .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+  .gauge .value { font-family: 'Geist Mono', monospace; font-size: 2.3rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; margin-top: 6px; }
+  .gauge .unit { color: var(--text-dim); font-size: 0.85rem; margin-left: 4px; }
+  .gauge.accent .value { color: var(--accent); }
+
+  .chart-wrap { position: relative; height: 260px; }
+
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 0.92rem; }
+  .kv dt { color: var(--text-dim); }
+  .kv dd { font-family: 'Geist Mono', monospace; }
+
+  .alert { padding: 12px 14px; border-radius: 8px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); color: var(--warn); margin-top: 10px; font-size: 0.9rem; }
+  .alert.urgent { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); color: var(--bad); }
+
+  footer { color: var(--text-dim); font-size: 0.78rem; text-align: right; font-family: 'Geist Mono', monospace; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div>
+    <div class="brand">KTM 890 <span>Duke</span></div>
+    <div class="meta"><span class="pulse" id="pulse"></span><span id="status">connecting…</span></div>
+  </div>
+  <div class="meta" id="clock"></div>
+</nav>
+
+<section class="grid">
+  <div>
+    <div class="card">
+      <h2>Telemetria live</h2>
+      <div class="gauges">
+        <div class="gauge accent">
+          <div class="label">RPM</div>
+          <div class="value"><span id="g-rpm">—</span></div>
+        </div>
+        <div class="gauge">
+          <div class="label">Velocità</div>
+          <div class="value"><span id="g-speed">—</span><span class="unit">km/h</span></div>
+        </div>
+        <div class="gauge">
+          <div class="label">Marcia</div>
+          <div class="value"><span id="g-gear">—</span></div>
+        </div>
+        <div class="gauge">
+          <div class="label">Temp olio</div>
+          <div class="value"><span id="g-oil">—</span><span class="unit">°C</span></div>
+        </div>
+        <div class="gauge">
+          <div class="label">Temp liq.</div>
+          <div class="value"><span id="g-coolant">—</span><span class="unit">°C</span></div>
+        </div>
+        <div class="gauge">
+          <div class="label">Voltaggio</div>
+          <div class="value"><span id="g-volt">—</span><span class="unit">V</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>RPM + velocità — ultimi 60s</h2>
+      <div class="chart-wrap"><canvas id="chart-main"></canvas></div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Temperature — ultimi 60s</h2>
+      <div class="chart-wrap"><canvas id="chart-temp"></canvas></div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="card">
+      <h2>Stato moto</h2>
+      <dl class="kv">
+        <dt>Km attuale</dt><dd id="km-attuale">—</dd>
+        <dt>Ultimo intervento</dt><dd id="ultimo">—</dd>
+        <dt>Prossimo intervento</dt><dd id="prossimo">—</dd>
+        <dt>Km mancanti</dt><dd id="km-mancanti">—</dd>
+        <dt>Giorni mancanti</dt><dd id="giorni-mancanti">—</dd>
+      </dl>
+      <div id="alerts"></div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Sorgente dati</h2>
+      <dl class="kv">
+        <dt>WebSocket</dt><dd id="ws-state">—</dd>
+        <dt>Campioni ricevuti</dt><dd id="ws-count">0</dd>
+        <dt>Ultimo update</dt><dd id="ws-last">—</dd>
+      </dl>
+    </div>
+  </aside>
+</section>
+
+<footer>cockpit · localhost · zero-cost build</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = v => (v === null || v === undefined ? '—' : v);
+
+// Charts
+const baseChart = (ctx, datasets) => new Chart(ctx, {
+  type: 'line',
+  data: { labels: [], datasets },
+  options: {
+    animation: false, responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { color: '#8a8a93' }, grid: { color: '#1a1a1f' } },
+      y: { ticks: { color: '#8a8a93' }, grid: { color: '#1a1a1f' } },
+    },
+    plugins: { legend: { labels: { color: '#ededee' } } },
+    elements: { point: { radius: 0 }, line: { tension: 0.25, borderWidth: 2 } },
+  },
+});
+
+const mainChart = baseChart($('chart-main'), [
+  { label: 'RPM',    data: [], borderColor: '#ff6a13', yAxisID: 'y' },
+  { label: 'km/h',   data: [], borderColor: '#60a5fa', yAxisID: 'y1' },
+]);
+mainChart.options.scales.y1 = { position: 'right', ticks: { color: '#8a8a93' }, grid: { display: false } };
+
+const tempChart = baseChart($('chart-temp'), [
+  { label: 'Olio °C',    data: [], borderColor: '#fbbf24' },
+  { label: 'Liquido °C', data: [], borderColor: '#4ade80' },
+]);
+
+const MAX_POINTS = 120;
+function pushPoint(chart, label, values) {
+  chart.data.labels.push(label);
+  values.forEach((v, i) => chart.data.datasets[i].data.push(v));
+  if (chart.data.labels.length > MAX_POINTS) {
+    chart.data.labels.shift();
+    chart.data.datasets.forEach(d => d.data.shift());
+  }
+  chart.update('none');
+}
+
+// Status (manutenzione) — refresh ogni 60s
+async function refreshStatus() {
+  try {
+    const r = await fetch('/api/status');
+    const s = await r.json();
+    $('km-attuale').textContent = fmt(s.km_attuale) + ' km';
+    $('ultimo').textContent = s.ultimo_km ? `${s.ultimo_km} km · ${s.ultimo_data ?? '—'}` : '—';
+    $('prossimo').textContent = s.tipo_prossimo ? `${s.tipo_prossimo} @ ${s.km_prossimo} km` : '—';
+    $('km-mancanti').textContent = fmt(s.km_mancanti);
+    $('giorni-mancanti').textContent = fmt(s.giorni_mancanti);
+    const alerts = $('alerts'); alerts.innerHTML = '';
+    (s.alerts || []).forEach(a => {
+      const d = document.createElement('div');
+      d.className = 'alert' + (a.startsWith('URGENTE') ? ' urgent' : '');
+      d.textContent = a;
+      alerts.appendChild(d);
+    });
+  } catch (e) { console.warn(e); }
+}
+refreshStatus(); setInterval(refreshStatus, 60_000);
+
+// WebSocket live
+let count = 0;
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(`${proto}://${location.host}/ws/live`);
+  $('ws-state').textContent = 'connecting';
+  ws.onopen = () => { $('ws-state').textContent = 'open'; $('status').textContent = 'live'; $('pulse').classList.add('live'); };
+  ws.onclose = () => { $('ws-state').textContent = 'closed'; $('status').textContent = 'disconnesso'; $('pulse').classList.remove('live'); setTimeout(connect, 2000); };
+  ws.onmessage = ev => {
+    const d = JSON.parse(ev.data);
+    count++;
+    $('ws-count').textContent = count;
+    $('ws-last').textContent = new Date().toLocaleTimeString('it-IT');
+    $('g-rpm').textContent = fmt(d.rpm);
+    $('g-speed').textContent = fmt(d.speed_kmh);
+    $('g-gear').textContent = d.gear ?? '—';
+    $('g-oil').textContent = fmt(d.oil_c);
+    $('g-coolant').textContent = fmt(d.coolant_c);
+    $('g-volt').textContent = d.voltage ? d.voltage.toFixed(2) : '—';
+    const t = new Date().toLocaleTimeString('it-IT', { hour12: false });
+    pushPoint(mainChart, t, [d.rpm ?? null, d.speed_kmh ?? null]);
+    pushPoint(tempChart, t, [d.oil_c ?? null, d.coolant_c ?? null]);
+  };
+}
+connect();
+
+setInterval(() => { $('clock').textContent = new Date().toLocaleString('it-IT'); }, 1000);
+</script>
+
+</body>
+</html>
