@@ -3,7 +3,76 @@
 tags: #diagnostica #acquisti
 
 > Percorso scelto: **ELM327 (PID standard + fault codes) + CAN DIY sniffing** con Python.
-> Budget totale: ~€45-60 in due fasi. Software PC già pronto al 100%.
+> Budget totale: ~€20-45 in due fasi. Software PC già pronto al 100% (vedi [[Roadmap Zero-Cost]]).
+
+---
+
+## ⭐ ACQUISTI MINIMI — NON SBAGLIARE
+
+Due pezzi soli, totale **~€20-30**. Funzionano insieme. Compra **entrambi** dallo stesso store se possibile per ridurre spedizione.
+
+### 1. Adattatore Euro5 ISO 19689 6-pin → OBD2
+
+**Cosa cercare nel titolo:** "Euro5" + "6 pin" + "OBD2" + ("KTM" o "790/890" o "ISO 19689").
+**Cosa NON comprare:** adattatori che dicono "690/990/1190" senza menzionare Euro5 — è il connettore vecchio, NON entra nella tua 890 2021.
+
+**⭐ Scelta 1 — KDS-online.de** (Germania, negozio specializzato moto, niente dogana UE)
+- Link diretto: https://kds-online.de/en/obd-adapter-euro5-for-motorcycle-6-pin-to-obd2-k-line-can-bus.html
+- Prezzo: ~€20 + ~€6 spedizione
+- Vantaggio: descrizione tecnica chiara, supporta sia K-Line sia CAN, garanzia commerciale UE
+
+**Scelta 2 — Amazon Italia**
+- Cerca: https://www.amazon.it/s?k=adattatore+Euro5+OBD2+moto+6+pin
+- Verifica nel titolo "Euro5" o "ISO 19689"
+- ASIN di riferimento internazionale: **B09GX4PVQ1** (SuperOBD)
+- Prezzo: ~€15-22
+
+**Scelta 3 — AliExpress (economica, attesa lunga)**
+- Ricerca: https://it.aliexpress.com/w/wholesale-Euro5-motorcycle-OBD2-6-pin-adapter-KTM.html
+- Prezzo: ~€7-12
+- ATTENZIONE: leggi le recensioni, scegli venditore con >95% feedback e foto reali
+
+---
+
+### 2. ELM327 Bluetooth (per smartphone + PC)
+
+**Cosa cercare:** ELM327 v1.5 con chip **PIC18F25K80** (originale) o marca affidabile.
+**Cosa NON comprare:** generici "ELM327 v2.1 mini" da €3 (chip clone, falsi positivi, perdono pacchetti).
+
+**⭐ Scelta consigliata — Vgate iCar Pro BT 4.0**
+- Compatibile Android + iOS (BLE), funziona anche su Windows BT
+- Chip affidabile, supporta tutti i PID OBD-II + protocolli moto
+- Link Amazon.it: https://www.amazon.it/s?k=vgate+iCar+Pro+BT+4.0
+- Prezzo: ~€20-28
+
+**Alternativa USB — Vgate vLinker FS USB**
+- Per chi vuole solo PC, niente BT
+- Link Amazon.it: https://www.amazon.it/s?k=vLinker+FS+USB
+- Prezzo: ~€25
+
+**Premium (se vuoi spendere di più) — OBDLink SX USB**
+- Gold standard, zero problemi driver, chip vero
+- Link: https://www.amazon.it/s?k=OBDLink+SX+USB
+- Prezzo: ~€30-35
+
+**Economica — ELM327 USB FTDI** (rischio compatibilità)
+- Solo se cerchi sotto i €10 e accetti possibili problemi
+- Link AliExpress: https://it.aliexpress.com/w/wholesale-ELM327-USB-FTDI.html
+- Prezzo: ~€8-12
+
+---
+
+## 💰 Ricapitolando — Le 3 strade
+
+| Strada | Pezzo 1 | Pezzo 2 | Totale |
+|--------|---------|---------|--------|
+| **🍗 Economica** | Adattatore AliExpress €10 | ELM327 BT generico €8 | **~€18** |
+| **⭐ Consigliata** | Adattatore KDS-online €20 + sped €6 | Vgate iCar Pro BT 4.0 €25 | **~€51** |
+| **💥 Sicura** | Adattatore Amazon Euro5 €20 | OBDLink SX USB €35 | **~€55** |
+
+**Decisione personale:** vai sulla **Consigliata**. €30 in più sull'economica ti tolgono ore di frustrazione con cavi che perdono pacchetti.
+
+Vedi anche [[Roadmap Zero-Cost]] per il piano fasi completo.
 
 ---
 

@@ -107,5 +107,7 @@ SORT km_previsti ASC
 | Tagliandi | [[02 - Manutenzione/Storico Tagliandi]] |
 | Accessori | [[05 - Accessori/Accessori]] |
 | OBD2 / Diagnostica | [[04 - Diagnostica/OBD2 Setup KTM]] |
+| 🚀 Cockpit (FASE 0 attiva) | [[04 - Diagnostica/Roadmap Zero-Cost]] |
+| Acquisti hardware | [[04 - Diagnostica/Lista Acquisti Diagnostica]] |
 | Tracking GPS | [[06 - App & Integrazioni/Tracking GPS]] |
 | Nuova uscita | [[Templates/Uscita Template]] |
