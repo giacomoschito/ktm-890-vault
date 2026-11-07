@@ -22,7 +22,7 @@ tags: #diagnostica #reverse-engineering #uds #rea #mappatura
 | Leggere identificazione ECU, codici errore, dati live | ✅ Sì | Software pronto: `diag_tool` |
 | Scoprire tutti gli identificativi (DID) che la ECU espone | ✅ Sì | Software pronto: `diag_tool scan-dids` |
 | Cancellare i codici errore | ✅ Sì (servizi standard OBD/UDS) | Software pronto: `diag_tool clear-dtc` |
-| Reset spia **ASSISTENZA** | ⚠️ Non garantito | È una funzione proprietaria KTM: va scoperta (vedi Obiettivo 2) |
+| Reset spia **ASSISTENZA** | ➖ Probabilmente non serve | Si fa dal menu nascosto del cruscotto ([[Reset Spia Assistenza KTM 890]], Opzione 0); il cavo è il piano B |
 | Mappatura (leggere/scrivere la mappa) | ❌ No | Serve uno strumento professionale; prima va chiarita la questione A2 |
 
 **Su REA:** è utile per analizzare un *programma* di diagnosi (Windows o Android), non la
@@ -106,7 +106,7 @@ probabilmente sul cruscotto TFT o sulla ECU, spesso protetta da *security access
 **Non invio comandi di scrittura "a tentativi"**: un DID sbagliato può alterare la configurazione.
 
 La strada di reverse engineering pulita, sulla tua moto:
-1. **Manuale d'uso**: verifica prima se il menu del TFT ha un reset service (alcuni siti lo dicono, non è verificato).
+1. **Dal cruscotto, prima di tutto**: più proprietari 790/890 riportano un menu service nascosto nel TFT (Settings evidenziato + ▲▼ per 5 s, salvataggio tenendo premuto SET). Procedura completa nell'Opzione 0 di [[Reset Spia Assistenza KTM 890]]. I passi seguenti servono solo se non funziona.
 2. **`diag_tool ecu`**: trova l'indirizzo del cruscotto e delle altre centraline.
 3. **Osserva chi lo sa fare**: con la CANable collegata ([[Lista Acquisti Diagnostica]] fase 2) registra il bus mentre un tester o l'officina esegue il reset:
    ```powershell

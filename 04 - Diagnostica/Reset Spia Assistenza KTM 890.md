@@ -9,10 +9,11 @@ livello: intermedio
 
 tags: #diagnostica #service-reset #tuneecu #ktm890
 
-> [!warning] Verifica 2026-11-07
-> Il supporto 890 Duke di MotoScan, KTMFlash/TunerPro e Healtech SP1 **non è stato confermato**.
-> L'unico tester trovato che dichiara il service reset sulla 890 è il Duonix Bike-Scan 2 Pro (~€449).
-> Piano aggiornato e procedura di reverse engineering: [[Reverse Engineering ECU]].
+> [!tip] Aggiornamento 2026-11-07 — si resetta DAL CRUSCOTTO, senza cavo
+> Più proprietari di 790/890 riportano un menu service nascosto nel TFT. **Prova prima l'Opzione 0 qui sotto.**
+> Il supporto 890 Duke di MotoScan, KTMFlash/TunerPro e Healtech SP1 **non è confermato**;
+> l'unico tester trovato che dichiara il service reset sulla 890 è il Duonix Bike-Scan 2 Pro (~€449).
+> Strada via cavo e reverse engineering: [[Reverse Engineering ECU]].
 
 > **Contesto:** Dopo il cambio olio + filtro DIY del 2026-06-05 (~5.300 km), la spia/messaggio **ASSISTENZA** sul cruscotto rimane attiva.
 > L'ECU/Cluster Bosch non sa che la manutenzione è stata fatta e va resettata via diagnosi.
@@ -25,11 +26,52 @@ Il reminder è un contatore software memorizzato nell'**ECU Bosch** (e/o nel clu
 - intervalli km predefiniti (5.000 / 10.000 km a seconda configurazione),
 - o intervalli di tempo (ogni 12 mesi).
 
-**Non si resetta da menù utente** sulla 890 Duke (a differenza di altri modelli). Serve un tool diagnostico esterno.
+~~Non si resetta da menù utente~~ → **corretto 2026-11-07:** non c'è una voce visibile, ma esiste un **menu
+service nascosto** nel cruscotto TFT, raggiungibile con una combinazione di tasti (Opzione 0).
+
+> Intervalli ufficiali KTM 890 Duke: primo tagliando a 1.000 km, poi ogni **15.000 km o 12 mesi**.
+> La spia scatta per **km oppure per data**: a ~5.500 km è quasi certamente scattata per i 12 mesi.
 
 ---
 
 ## Opzioni per il Reset (dalla più economica alla più completa)
+
+### Opzione 0 — Dal cruscotto, gratis, 2 minuti ⭐ PROVA PRIMA QUESTA
+
+> Fonte: procedure riportate da più proprietari 790/890 (forum, tutorial ScegliAuto). Non è un testo
+> ufficiale KTM: se il tuo display si comporta diversamente, vale il manuale d'uso (sez. "Service" del
+> capitolo strumentazione, [PDF ufficiale 890 Duke 2021](https://mobil.ktmshop.se/bike-manuals/21_3214300_en_OM.pdf)).
+
+**Prima di iniziare**
+- Moto ferma, **chiave su ON, motore spento**.
+- Controlla che **data e ora del cruscotto siano giuste** (menu Settings): la spia scatta anche per data, e con un orologio sbagliato si riaccende subito.
+- La spia ASSISTENZA deve essere **accesa** (alcuni riportano che il menu non si apre se è spenta). Lo è.
+
+**Procedura** (tasti a sinistra sul manubrio: ▲ ▼ SET BACK)
+1. Dalla schermata principale premi **SET** per aprire il menu.
+2. Scorri con ▲/▼ fino a evidenziare la voce **Settings**. In alcune versioni software è dentro **Trip/Data**.
+   **Non premere SET**: Settings deve restare solo evidenziata, non aperta. Non evidenziare "Service".
+3. Tieni premuti **insieme ▲ e ▼** per circa **5 secondi**.
+4. Compare la schermata dell'**intervallo service**, con km e mesi al prossimo tagliando.
+5. Imposta i valori con ▲/▼ e SET. Due scelte sensate:
+   - **15.000 km / 12 mesi**: intervallo ufficiale KTM;
+   - **5.000 km**: se vuoi che la spia ti ricordi il cambio olio anticipato che fai tu (prossimo previsto a ~10.400 km).
+6. **Per salvare, TIENI PREMUTO SET** per qualche secondo, finché torna la schermata principale.
+   ⚠️ **Non usare BACK**: secondo più utenti esce senza salvare.
+7. Spegni il quadro, aspetta 10 secondi, riaccendi: la spia deve essere sparita.
+
+**Se non funziona**
+| Sintomo | Cosa provare |
+|---------|--------------|
+| Con ▲+▼ non succede niente | Ricontrolla di essere su **Settings** (non dentro, non su Service). Poi prova **▲ + ▼ + SET insieme** (variante riportata su una 790) |
+| Il menu si apre ma la spia torna | Hai salvato con BACK invece che tenendo premuto SET; ripeti |
+| La spia torna dopo poco | Data/ora del cruscotto sbagliate, oppure scatta per data: verifica i mesi impostati |
+| Non riesci a modificare i mesi | Su alcune 890 i mesi restano fissi a 12: va bene così, cambia solo i km |
+| Nessuna variante funziona | Passa all'Opzione A/B (cavo) o D (officina, €20-50) |
+
+**Dopo il reset**: annota data, km e valori impostati in [[02 - Manutenzione/Storico Tagliandi]].
+
+---
 
 ### Opzione A — MotoScan (Android + ELM327 Bluetooth) ⭐ CONSIGLIATA
 
