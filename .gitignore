@@ -6,7 +6,9 @@
 .trash/
 
 # === Claude Code (impostazioni locali) ===
-.claude/
+# Le skill di progetto sono versionate, il resto resta locale
+.claude/*
+!.claude/skills/
 
 # === Sistema operativo ===
 .DS_Store
