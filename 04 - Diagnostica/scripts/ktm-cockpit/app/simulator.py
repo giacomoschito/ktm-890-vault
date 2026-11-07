@@ -160,6 +160,8 @@ def encode_mode22(did_hex: str) -> str:
     except ValueError:
         return "NO DATA"
     payload = UDS_DIDS.get(did)
+    if did in SIM_PROTECTED_DIDS:
+        return "7F 22 33"  # NRC: securityAccessDenied
     if payload is None:
         return "7F 22 31"  # NRC: requestOutOfRange
     high = (did >> 8) & 0xFF
@@ -168,13 +170,48 @@ def encode_mode22(did_hex: str) -> str:
     return f"62 {high:02X} {low:02X} {body}"
 
 
+# DTC simulati: (byte alto, byte basso, failure type, status UDS)
+# P0562 = tensione di sistema bassa (tipico dopo batteria scarica) — confermato
+# P0117 = sensore temperatura liquido, segnale basso — solo pending
+SIM_DTCS: list[tuple[int, int, int, int]] = [
+    (0x05, 0x62, 0x16, 0x08),
+    (0x01, 0x17, 0x11, 0x04),
+]
+SIM_PROTECTED_DIDS = {0xF1A0}  # esiste ma richiede security access
+
+
+def _dtc_bytes(records) -> str:
+    return " ".join(f"{h:02X} {lo:02X}" for h, lo, _ftb, _st in records)
+
+
 def encode_mode03() -> str:
-    """Mode 03 — read DTCs (simuliamo zero codici attivi)."""
-    return "43 00"
+    """Mode 03 — DTC confermati."""
+    confirmed = [d for d in SIM_DTCS if d[3] & 0x08]
+    return f"43 {len(confirmed):02X} {_dtc_bytes(confirmed)}".strip()
+
+
+def encode_mode07() -> str:
+    """Mode 07 — DTC pending."""
+    pending = [d for d in SIM_DTCS if d[3] & 0x04]
+    return f"47 {len(pending):02X} {_dtc_bytes(pending)}".strip()
+
+
+def encode_uds19(sub: str) -> str:
+    """0x19 02 — reportDTCByStatusMask."""
+    if sub[:2] != "02":
+        return "7F 19 12"
+    body = " ".join(f"{h:02X} {lo:02X} {ftb:02X} {st:02X}" for h, lo, ftb, st in SIM_DTCS)
+    return f"59 02 FF {body}".strip()
+
+
+def clear_dtcs(positive: str) -> str:
+    SIM_DTCS.clear()
+    return positive
 
 
 async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     state = RideState(t0=time.time())
+    header = "7E0"
     peer = writer.get_extra_info("peername")
     print(f"[sim] client connesso: {peer}")
     try:
@@ -183,7 +220,22 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
             cmd = data.decode("ascii", errors="ignore").strip().upper().replace(" ", "")
             if not cmd:
                 continue
-            if cmd in AT_RESPONSES:
+            if cmd.startswith("ATSH"):
+                header = cmd[4:]
+                writer.write(b"OK\r\r>")
+            elif not cmd.startswith("AT") and header not in ("7E0", "7DF"):
+                writer.write(b"NO DATA\r\r>")  # simuliamo una sola centralina, la ECU motore
+            elif cmd == "3E00":
+                writer.write(b"7E 00\r\r>")
+            elif cmd == "04":
+                writer.write(f"{clear_dtcs('44')}\r\r>".encode())
+            elif cmd == "14FFFFFF":
+                writer.write(f"{clear_dtcs('54')}\r\r>".encode())
+            elif cmd == "07":
+                writer.write(f"{encode_mode07()}\r\r>".encode())
+            elif cmd.startswith("19") and len(cmd) >= 4:
+                writer.write(f"{encode_uds19(cmd[2:])}\r\r>".encode())
+            elif cmd in AT_RESPONSES:
                 resp = AT_RESPONSES[cmd]
                 if cmd == "ATRV":
                     resp = f"{state.voltage():.1f}V"
@@ -197,8 +249,6 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                 writer.write(f"{encode_mode22(cmd[2:6])}\r\r>".encode())
             elif cmd.startswith("03"):
                 writer.write(f"{encode_mode03()}\r\r>".encode())
-            elif cmd.startswith("ATSH"):
-                writer.write(b"OK\r\r>")
             else:
                 writer.write(b"?\r\r>")
             await writer.drain()

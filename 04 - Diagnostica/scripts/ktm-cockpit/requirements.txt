@@ -3,6 +3,7 @@ uvicorn[standard]>=0.32
 websockets>=13
 sqlmodel>=0.0.22
 pyserial>=3.5
+pyserial-asyncio>=0.6
 obd>=0.7.2
 python-can>=4.4
 rich>=13.9

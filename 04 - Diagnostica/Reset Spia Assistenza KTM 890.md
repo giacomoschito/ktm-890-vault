@@ -9,6 +9,11 @@ livello: intermedio
 
 tags: #diagnostica #service-reset #tuneecu #ktm890
 
+> [!warning] Verifica 2026-11-07
+> Il supporto 890 Duke di MotoScan, KTMFlash/TunerPro e Healtech SP1 **non è stato confermato**.
+> L'unico tester trovato che dichiara il service reset sulla 890 è il Duonix Bike-Scan 2 Pro (~€449).
+> Piano aggiornato e procedura di reverse engineering: [[Reverse Engineering ECU]].
+
 > **Contesto:** Dopo il cambio olio + filtro DIY del 2026-06-05 (~5.300 km), la spia/messaggio **ASSISTENZA** sul cruscotto rimane attiva.
 > L'ECU/Cluster Bosch non sa che la manutenzione è stata fatta e va resettata via diagnosi.
 

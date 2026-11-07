@@ -109,6 +109,7 @@ SORT km_previsti ASC
 | OBD2 / Diagnostica | [[04 - Diagnostica/OBD2 Setup KTM]] |
 | 🚀 Cockpit (FASE 0 attiva) | [[04 - Diagnostica/Roadmap Zero-Cost]] |
 | 🔍 Fase A: UDS + A2 detection | [[04 - Diagnostica/Fase A - UDS Read-Only]] |
+| 🧬 Reverse engineering ECU (errori, assistenza, mappa) | [[04 - Diagnostica/Reverse Engineering ECU]] |
 | Acquisti hardware | [[04 - Diagnostica/Lista Acquisti Diagnostica]] |
 | Tracking GPS | [[06 - App & Integrazioni/Tracking GPS]] |
 | Nuova uscita | [[Templates/Uscita Template]] |

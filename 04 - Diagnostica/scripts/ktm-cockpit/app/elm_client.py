@@ -6,7 +6,10 @@ i PID interessanti e chiama callback(dict) con i valori decodificati.
 
 Modalità:
 - TCP (default in dev):   ElmClient.tcp("127.0.0.1", 35000)
-- Serial (cavo USB):      ElmClient.serial("COM3", 38400)
+- Serial (cavo USB/BT):   ElmClient.serial("COM3", 38400)
+- Automatica:             ElmClient.open(target, port=35000, baud=None)
+    target "COMx" o "/dev/..." → seriale a `baud` (default 38400)
+    qualsiasi altro target   → TCP su `port`
 """
 
 from __future__ import annotations
@@ -14,6 +17,14 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 from typing import Awaitable, Callable
+
+DEFAULT_BAUD = 38400
+
+
+def is_serial_target(target: str) -> bool:
+    t = target.strip().upper()
+    return t.startswith("COM") or target.startswith("/dev/")
+
 
 PIDS = ["010C", "010D", "0105", "015C", "0111", "0142", "01A4"]
 PID_NAMES = {
@@ -72,6 +83,22 @@ class ElmClient:
         await client.init()
         return client
 
+    @classmethod
+    async def serial(cls, port: str = "COM3", baud: int = 38400) -> "ElmClient":
+        # import ritardato: serve solo con hardware reale (pip install pyserial-asyncio)
+        import serial_asyncio
+
+        reader, writer = await serial_asyncio.open_serial_connection(url=port, baudrate=baud)
+        client = cls(reader, writer)
+        await client.init()
+        return client
+
+    @classmethod
+    async def open(cls, target: str, port: int = 35000, baud: int | None = None) -> "ElmClient":
+        if is_serial_target(target):
+            return await cls.serial(target, baud or DEFAULT_BAUD)
+        return await cls.tcp(target, port)
+
     async def init(self):
         for cmd in ("ATZ", "ATE0", "ATL0", "ATH0", "ATS0", "ATSP0"):
             await self.cmd(cmd)
@@ -106,11 +133,12 @@ async def poll_loop(
     host: str = "127.0.0.1",
     port: int = 35000,
     interval_s: float = 0.5,
+    baud: int | None = None,
 ):
     """Loop di polling: legge PID e invia dict aggregato al callback."""
     while True:
         try:
-            client = await ElmClient.tcp(host, port)
+            client = await ElmClient.open(host, port, baud)
             print(f"[elm] connesso a {host}:{port}")
             while True:
                 snapshot: dict = {}
@@ -122,6 +150,6 @@ async def poll_loop(
                 if snapshot:
                     await callback(snapshot)
                 await asyncio.sleep(interval_s)
-        except (ConnectionRefusedError, ConnectionResetError, asyncio.IncompleteReadError):
+        except (OSError, asyncio.IncompleteReadError):
             print(f"[elm] {host}:{port} non raggiungibile, retry in 3s…")
             await asyncio.sleep(3)

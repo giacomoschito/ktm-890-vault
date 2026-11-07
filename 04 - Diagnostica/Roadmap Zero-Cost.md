@@ -80,7 +80,7 @@ Vedi [[Lista Acquisti Diagnostica]] aggiornata con link precisi.
 **Cosa otteniamo subito:**
 - RPM, velocità, temp liquido/olio, voltaggio, gas, marcia (PID standard)
 - **Lettura/cancellazione codici errore** (DTC)
-- **Reset spia ASSISTENZA** via comando custom (replicando MotoScan)
+- **Reset spia ASSISTENZA**: il comando KTM non è noto, va scoperto → [[Reverse Engineering ECU]]
 
 ---
 

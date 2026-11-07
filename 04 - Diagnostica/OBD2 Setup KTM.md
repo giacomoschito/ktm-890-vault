@@ -101,6 +101,10 @@ TuneECU è un software gratuito Windows sviluppato dalla community per:
 
 ### Compatibilità 890 Duke 2021
 
+> [!warning] Verifica 2026-11-07
+> Nessuna fonte conferma il supporto TuneECU per la 890 Duke 2021 (ECU Bosch ME17.9.21).
+> Consideralo non supportato finché non lo provi. Vedi [[Reverse Engineering ECU]].
+
 TuneECU supporta la serie 890 Duke. La versione ECU installata sulla tua moto determina le funzionalità disponibili. Lo scopriamo al primo collegamento.
 
 ---

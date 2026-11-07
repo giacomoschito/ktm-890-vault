@@ -24,6 +24,7 @@ from app.uds import (
     mode09,
     read_did,
     read_dtcs,
+    read_dtcs_uds,
     setup_uds,
 )
 
@@ -54,6 +55,7 @@ class EcuReport:
     ecu_name: str | None = None
     dids: dict[str, str] = field(default_factory=dict)
     dtcs: list[str] = field(default_factory=list)
+    dtcs_uds: list[str] = field(default_factory=list)
     a2: A2Assessment = field(default_factory=A2Assessment)
     notes: list[str] = field(default_factory=list)
 
@@ -105,11 +107,11 @@ def assess_a2(calibration_id: str | None, sw_version: str | None) -> A2Assessmen
     return a
 
 
-async def collect(host: str = "127.0.0.1", port: int = 35000) -> EcuReport:
+async def collect(host: str = "127.0.0.1", port: int = 35000, baud: int | None = None) -> EcuReport:
     """Esegue tutta la scansione one-shot dell'ECU."""
     report = EcuReport()
     try:
-        client = await ElmClient.tcp(host, port)
+        client = await ElmClient.open(host, port, baud)
     except (ConnectionRefusedError, OSError) as e:
         report.notes.append(f"ELM non raggiungibile su {host}:{port} → {e}")
         return report
@@ -155,6 +157,10 @@ async def collect(host: str = "127.0.0.1", port: int = 35000) -> EcuReport:
 
         # DTCs
         report.dtcs = await read_dtcs(client)
+        uds_dtcs, uds_raw = await read_dtcs_uds(client)
+        report.dtcs_uds = [f"{d.label} [{', '.join(d.flags) or f'status 0x{d.status:02X}'}]" for d in uds_dtcs]
+        if uds_raw.nrc is not None:
+            report.notes.append(f"Lettura DTC UDS (0x19) rifiutata: {uds_raw.nrc_name}")
 
         # Validazione e verdetto
         if report.vin:

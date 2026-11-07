@@ -36,6 +36,7 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 
 ELM_HOST = os.environ.get("KTM_ELM_HOST", "127.0.0.1")
 ELM_PORT = int(os.environ.get("KTM_ELM_PORT", "35000"))
+ELM_BAUD = int(os.environ["KTM_ELM_BAUD"]) if os.environ.get("KTM_ELM_BAUD") else None
 
 clients: set[WebSocket] = set()
 latest_snapshot: dict = {}
@@ -60,7 +61,7 @@ async def broadcast(snapshot: dict):
 async def lifespan(app: FastAPI):
     init_db()
     task = asyncio.create_task(
-        elm_client.poll_loop(broadcast, host=ELM_HOST, port=ELM_PORT, interval_s=0.5)
+        elm_client.poll_loop(broadcast, host=ELM_HOST, port=ELM_PORT, interval_s=0.5, baud=ELM_BAUD)
     )
     print(f"[main] polling ELM su {ELM_HOST}:{ELM_PORT}")
     try:
@@ -117,7 +118,7 @@ async def api_history(limit: int = 500):
 @app.get("/api/ecu")
 async def api_ecu():
     """One-shot ECU info read: VIN, calibration ID, DTCs, verdetto A2."""
-    report = await ecu_info.collect(host=ELM_HOST, port=ELM_PORT)
+    report = await ecu_info.collect(host=ELM_HOST, port=ELM_PORT, baud=ELM_BAUD)
     return ecu_info.to_dict(report)
 
 
